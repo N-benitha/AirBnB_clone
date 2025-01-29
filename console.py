@@ -14,6 +14,7 @@ from models.amenity import Amenity
 from models.place import Place
 from models.review import Review
 
+
 def parse(arg):
     """ Parses the string arg """
     curly_braces = re.search(r"\{(.*?)\}", arg)
@@ -33,9 +34,18 @@ def parse(arg):
         rtl.apppend(curly_braces.group())
         return rtl
 
+
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
-    __classes = {"BaseModel", "User", "State", "City", "Amenity", "Place", "Review"}
+    __classes = {
+        "BaseModel",
+        "User",
+        "State",
+        "City",
+        "Amenity",
+        "Place",
+        "Review"
+    }
 
     def do_EOF(self, line):
         """ Exit the program """
@@ -108,9 +118,8 @@ class HBNBCommand(cmd.Cmd):
             print(objdict["{}.{}".format(argl[0], argl[1])])
 
     def do_destroy(self, arg):
-        """ Deletes an instance based on the class name 
-            and id(save the change into the JSON file)."""
-
+        """ Deletes an instance based on the class name
+        and id(save the change into the JSON file)."""
         argl = parse(arg)
         objdict = storage.all()
 
@@ -135,9 +144,8 @@ class HBNBCommand(cmd.Cmd):
             storage.save()
 
     def do_all(self, arg):
-        """ Prints all string representation of all instances based 
-            or not on the class name """
-
+        """ Prints all string representation of all instances based
+        or not on the class name """
         argl = parse(arg)
         if len(argl) > 0 and argl[0] not in HBNBCommand.__classes:
             print("** class doesn't exist **")
@@ -166,9 +174,9 @@ class HBNBCommand(cmd.Cmd):
         print(count)
 
     def do_update(self, arg):
-        """ Updates an instance based on the class name 
-            and id by adding or updating attribute 
-            (save the change into the JSON file) """
+        """ Updates an instance based on the class name and id
+            by adding or updating attribute (save the change
+            into the JSON file) """
         argl = parse(arg)
         objdict = storage.all()
 
@@ -210,13 +218,14 @@ class HBNBCommand(cmd.Cmd):
         elif type(eval(argl[2])) == dict:
             for k, v in eval(argl[2]).items():
                 if (k in objdict[ket].__class__.__dict__.keys() and
-                        type(objdict[ket].__class__.__dict__[k]) in 
+                    type(objdict[ket].__class__.__dict__[k]) in
                         {str, int, float}):
                     valtype = type(objdict[ket].__class__.__dict__[argl[k]])
                     objdict[ket].__dict__[k] = valtype(v)
                 else:
                     objdict[ket].__dict__[k] = v
         storage.save()
+
 
 if __name__ == '__main__':
     HBNBCommand().cmdloop()

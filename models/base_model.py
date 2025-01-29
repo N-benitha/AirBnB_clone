@@ -2,14 +2,13 @@
 """
     BaseModel defines all common attributes/mmethods for
     other classes. """
-
 import uuid
 from datetime import datetime
 from models import storage
 
+
 class BaseModel:
     """ Base of all other classes """
-
     def __init__(self, *args, **kwargs):
         """ Initialization of a Base instance
         Args:
