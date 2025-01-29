@@ -50,6 +50,27 @@ class HBNBCommand(cmd.Cmd):
         """ Do nothing when an empty line + `Enter` is clicked """
         pass
 
+    def default(self, arg):
+        """ Default behavior for cmd module when input is invalid """
+        argdict = {
+                "all": self.do_all,
+                "show": self.do_show,
+                "destroy": self.do_destroy,
+                "update": self.do_update
+        }
+        match = re.search(r"\.", arg)
+        if match is not None:
+            agrl = [arg[:match.span()[0]], arg[match.span()[1]:]]
+            match = re.search(r"\((.*?)\)", argl[1])
+            if match is not None:
+                command = [agrl[1][:match.span()[0]], match.group()[1:-1]]
+                if command[0] in argdict.keys():
+                    call = "{} {}".format(argl[0], command[1])
+                    return argdict[command[0]](call)
+
+        print("*** Unknown syntax: {}".format(arg))
+        return False
+
     def do_create(self, arg):
         """ Creates a new instance of Basemodel, saves it and prints the id """
 
