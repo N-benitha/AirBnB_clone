@@ -7,6 +7,7 @@ import re
 from shlex import split
 from models import storage
 from models.base_model import BaseModel
+from models.user import User
 
 def parse(arg):
     """ Parses the string arg """
@@ -29,7 +30,7 @@ def parse(arg):
 
 class HBNBCommand(cmd.Cmd):
     prompt = '(hbnb) '
-    __classes = {"BaseModel"}
+    __classes = {"BaseModel", "User"}
 
     def do_EOF(self, line):
         """ Exit the program """
