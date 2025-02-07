@@ -4,6 +4,8 @@
 import cmd
 import sys
 import re
+import ast
+import json
 from shlex import split
 from models import storage
 from models.base_model import BaseModel
@@ -26,12 +28,12 @@ def parse(arg):
         else:
             lexer = split(arg[:brackets.span()[0]])
             rtl = list([i.strip(",") for i in lexer])
-            rtl.apppend(brackets.group())
+            rtl.append(brackets.group())
             return rtl
     else:
         lexer = split(arg[:curly_braces.span()[0]])
         rtl = list([i.strip(",") for i in lexer])
-        rtl.apppend(curly_braces.group())
+        rtl.append(curly_braces.group())
         return rtl
 
 
@@ -70,12 +72,29 @@ class HBNBCommand(cmd.Cmd):
                 "update": self.do_update
         }
         match = re.search(r"\.", arg)
+
         if match is not None:
             argl = [arg[:match.span()[0]], arg[match.span()[1]:]]
             match = re.search(r"\((.*?)\)", argl[1])
             if match is not None:
                 command = [argl[1][:match.span()[0]], match.group()[1:-1]]
+
                 if command[0] in argdict.keys():
+                    match = re.search(r"\{(.*?)\}", command[1])
+
+                    if match is not None:
+                        obj_id = command[1][:match.span()[0]].strip(" ,")
+                        dict_str = match.group()
+                        try:
+                            dict_repr = json.loads(dict_str.replace("'", "\""))
+
+                        except json.JSONDecodeError:
+                            print("** Invalid dictionary format **")
+                            return False
+
+                        call = "{} {} {}".format(argl[0], obj_id, dict_repr)
+                        return argdict[command[0]](call)
+
                     call = "{} {}".format(argl[0], command[1])
                     return argdict[command[0]](call)
 
@@ -203,8 +222,11 @@ class HBNBCommand(cmd.Cmd):
 
         if len(argl) == 3:
             try:
-                type(eval(argl[2])) != dict
-            except NameError:
+                updates = ast.literal_eval(argl[2])
+                if not isinstance(updates, dict):
+                    print("** value missing **")
+                    return False
+            except (SyntaxError, ValueError):
                 print("** value missing **")
                 return False
 
@@ -220,7 +242,7 @@ class HBNBCommand(cmd.Cmd):
                 if (k in objdict[ket].__class__.__dict__.keys() and
                     type(objdict[ket].__class__.__dict__[k]) in
                         {str, int, float}):
-                    valtype = type(objdict[ket].__class__.__dict__[argl[k]])
+                    valtype = type(objdict[ket].__class__.__dict__[k])
                     objdict[ket].__dict__[k] = valtype(v)
                 else:
                     objdict[ket].__dict__[k] = v
