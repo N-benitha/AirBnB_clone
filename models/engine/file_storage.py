@@ -4,6 +4,7 @@
 import json
 import os
 
+
 class FileStorage:
     """ Class for serialization and deserialization """
     __file_path = "file.json"
@@ -22,7 +23,8 @@ class FileStorage:
         """ Serializes __objects to the JSON file """
         try:
             with open(FileStorage.__file_path, "w", encoding="utf-8") as f:
-                data = {k:v.to_dict() for k, v in FileStorage.__objects.items()}
+                data = {k: v.to_dict()
+                        for k, v in FileStorage.__objects.items()}
                 json.dump(data, f)
         except (IOError, TypeError) as e:
             print(f"Error saving to file: {e}")
@@ -57,7 +59,7 @@ class FileStorage:
             with open(FileStorage.__file_path, "r", encoding="utf-8") as f:
                 obj_dict = json.load(f)
                 obj_dict = {k: self.classes()[v["__class__"]](**v)
-                        for k, v in obj_dict.items()}
+                            for k, v in obj_dict.items()}
                 FileStorage.__objects = obj_dict
 
         except (FileNotFoundError, IOError, json.JSONDecodeError) as e:

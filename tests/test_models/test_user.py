@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 """ Unittest module for User Class """
 
-
 import unittest
 from datetime import datetime
 import time
@@ -45,9 +44,10 @@ class Test_User(unittest.TestCase):
         """ Tests the attributes of User class. """
         attributes = storage.attributes()["User"]
         o = User()
-        for k,v in attributes.items():
+        for k, v in attributes.items():
             self.assertTrue(hasattr(o, k))
             self.assertEqual(type(getattr(o, k, None)), v)
+
 
 if __name__ == "__main__":
     unittest.main()
