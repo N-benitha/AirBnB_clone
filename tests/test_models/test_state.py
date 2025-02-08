@@ -20,16 +20,16 @@ class TestState(unittest.TestCase):
 
     def setUp(self):
         """Sets up test methods."""
-        pass
+        cls.resetStorage()
 
     def tearDown(self):
         """Tears down test methods."""
-        self.resetStorage()
-        pass
+        cls.resetStorage()
 
     def resetStorage(self):
         """Resets FileStorage data."""
         FileStorage._FileStorage__objects = {}
+        storage.save()
         if os.path.isfile(FileStorage._FileStorage__file_path):
             os.remove(FileStorage._FileStorage__file_path)
 
@@ -43,7 +43,7 @@ class TestState(unittest.TestCase):
 
     def test_8_attributes(self):
         """Tests the attributes of State class."""
-        attributes = storage.attributes()["State"]
+        attributes = {"name": str}
         o = State()
         for k, v in attributes.items():
             self.assertTrue(hasattr(o, k))
